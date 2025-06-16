@@ -7,8 +7,10 @@ RUN go mod download && go mod verify
 COPY . .
 RUN go build -v -o /run-app .
 
-
 FROM debian:bookworm
 
+WORKDIR /usr/config
+COPY config.yaml ./
+
 COPY --from=builder /run-app /usr/local/bin/
-CMD ["run-app", "server"]
+CMD ["run-app", "server", "--config", "/usr/config/config.yaml"]
